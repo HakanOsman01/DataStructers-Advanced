@@ -9,7 +9,67 @@
 
         public void Insert(T element)
         {
-            throw new NotImplementedException();
+            this.root = this.Insert(this.root, element);
+        }
+
+        private TreeNode<T> Insert(TreeNode<T> node, T element)
+        {
+            if(node == null)
+            {
+                return new TreeNode<T>(element);
+            }
+            if (node.IsLeaf())
+            {
+                return this.MergeNodes(node,new TreeNode<T>(element));
+            }
+            if (IsLesser(element, node.LeftKey))
+            {
+                var newNode=this.Insert(node.LeftChild, element);
+                return newNode==node.LeftChild ? node : this.MergeNodes(node,newNode);
+
+            }
+            else if (node.IsTwoNode() || IsLesser(element, node.RightKey))
+            {
+                var newNode=this.Insert(node.MiddleChild,element);
+                return newNode==node.MiddleChild ? node :this.MergeNodes(node, newNode);
+            }
+            else
+            {
+                var newNode = this.Insert(node.RightChild, element);
+                return newNode==node.RightChild ? node : this.MergeNodes(node, newNode);
+
+            }
+
+        }
+
+        private bool IsLesser(T element, T leftKey)
+        {
+            return element.CompareTo(leftKey) < 0;
+        }
+
+        private TreeNode<T> MergeNodes(TreeNode<T> currentNode, TreeNode<T> node)
+        {
+            if (currentNode.IsTwoNode())
+            {
+                if (IsLesser(currentNode.LeftKey, node.LeftKey))
+                {
+                    currentNode.RightKey= node.LeftKey;
+                    currentNode.LeftKey = node.LeftKey;
+                    currentNode.MiddleChild = node.LeftChild;
+                    currentNode.RightChild = currentNode.MiddleChild;
+
+                }
+                else
+                {
+                    currentNode.RightKey = currentNode.LeftKey;
+                    currentNode.RightChild= currentNode.MiddleChild;
+                    currentNode.MiddleChild= currentNode.LeftChild;
+                    currentNode.LeftChild=node.LeftChild;
+                    currentNode.LeftKey= node.LeftKey;
+                    
+                }
+                return currentNode;
+            }
         }
 
         public override string ToString()
