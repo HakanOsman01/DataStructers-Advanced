@@ -29,8 +29,8 @@
 
         public bool IsLeaf()
         {
-            return this.LeftChild == null 
-                && this.MiddleChild == null 
+            return this.LeftChild == null && 
+                this.MiddleChild == null 
                 && this.RightChild == null;
         }
     }
