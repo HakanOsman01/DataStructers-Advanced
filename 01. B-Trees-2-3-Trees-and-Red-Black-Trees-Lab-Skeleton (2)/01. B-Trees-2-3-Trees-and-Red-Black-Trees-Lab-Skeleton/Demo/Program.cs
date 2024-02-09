@@ -7,8 +7,8 @@ namespace Demo
         static void Main()
         {
             var tree = new TwoThreeTree<int>();
-            tree.Insert(100);
-            tree.Insert(150);
+            tree.Insert(50);
+            tree.Insert(35);
 
         }
     }

@@ -9,67 +9,111 @@
 
         public void Insert(T element)
         {
-            this.root=this.Insert(this.root, element);
+            this.root = this.Insert(this.root, element);
         }
 
         private TreeNode<T> Insert(TreeNode<T> node, T element)
         {
-            if(node== null)
+            if (node == null)
             {
                 return new TreeNode<T>(element);
             }
-            else if (node.IsLeaf())
+
+            if (node.IsLeaf())
             {
                 return this.MergeNodes(node, new TreeNode<T>(element));
             }
-            else if (IsLesser(node.LeftKey, element))
-            {
-                node=this.Insert(node.LeftChild, element);
-                return node == node.LeftChild ? node 
-                    : this.MergeNodes(node, new TreeNode<T>(element));
 
+            if (IsLesser(element, node.LeftKey))
+            {
+                var newNode = this.Insert(node.LeftChild, element);
+
+                return newNode == node.LeftChild ? node : this.MergeNodes(node, newNode);
             }
-            else if(node.IsTwoNode() || IsLesser(node.RightKey, element))
+            else if (node.IsTwoNode() || IsLesser(element, node.RightKey))
             {
+                var newNode = this.Insert(node.MiddleChild, element);
 
-                node = this.Insert(node.MiddleChild, element);
-                return node == node.MiddleChild ? node
-                    : this.MergeNodes(node, new TreeNode<T>(element));
+                return newNode == node.MiddleChild ? node : this.MergeNodes(node, newNode);
             }
             else
             {
-                node = this.Insert(node.RightChild, element);
-                return node == node.RightChild ? node
-                    : this.MergeNodes(node, new TreeNode<T>(element));
+                var newNode = this.Insert(node.RightChild, element);
+
+                return newNode == node.RightChild ? node : this.MergeNodes(node, newNode);
             }
-
-
         }
-        private bool IsLesser(T element,T key) 
+
+        private bool IsLesser(T element, T key)
         {
             return element.CompareTo(key) < 0;
-
         }
 
-        private TreeNode<T> MergeNodes(TreeNode<T> currentNode, TreeNode<T> node)
+        private TreeNode<T> MergeNodes(TreeNode<T> current, TreeNode<T> node)
         {
-            if (currentNode.IsTwoNode())
+            if (current.IsTwoNode())
             {
-                if (IsLesser(currentNode.LeftKey, node.LeftKey))
+                if (IsLesser(current.LeftKey, node.LeftKey))
                 {
-                    currentNode.RightKey= currentNode.LeftKey;
-                    currentNode.LeftKey=node.LeftKey;
-                    currentNode.MiddleChild = node.LeftChild;
-
+                    current.RightKey = node.LeftKey;
+                    current.MiddleChild = node.LeftChild;
+                    current.RightChild = node.MiddleChild;
                 }
                 else
                 {
-                   
-                    
-
+                    current.RightKey = current.LeftKey;
+                    current.RightChild = current.MiddleChild;
+                    current.MiddleChild = node.MiddleChild;
+                    current.LeftChild = node.LeftChild;
+                    current.LeftKey = node.LeftKey;
                 }
+
+                return current;
             }
-            return null;
+            else if (IsLesser(node.LeftKey, current.LeftKey))
+            {
+                var newNode = new TreeNode<T>(current.LeftKey)
+                {
+                    LeftChild = node,
+                    MiddleChild = current
+                };
+
+                current.LeftChild = current.MiddleChild;
+                current.MiddleChild = current.RightChild;
+                current.LeftKey = current.RightKey;
+                current.RightKey = default;
+                current.RightChild = null;
+
+                return newNode;
+            }
+            else if (IsLesser(node.LeftKey, current.RightKey))
+            {
+                node.MiddleChild = new TreeNode<T>(current.RightKey)
+                {
+                    LeftChild = node.MiddleChild,
+                    MiddleChild = current.RightChild
+                };
+
+                node.LeftChild = current;
+                current.RightKey = default;
+                current.RightChild = null;
+
+                return node;
+            }
+            else
+            {
+                var newNode = new TreeNode<T>(current.RightKey)
+                {
+                    LeftChild = current,
+                    MiddleChild = node
+                };
+
+                node.LeftChild = current.RightChild;
+                current.RightKey = default;
+                current.RightChild = null;
+
+                return newNode;
+            }
         }
 
         public override string ToString()
