@@ -1,4 +1,5 @@
-﻿using _01.Two_Three;
+﻿using System;
+using _01.Two_Three;
 
 namespace Demo
 {
@@ -6,9 +7,23 @@ namespace Demo
     {
         static void Main()
         {
-            var tree = new TwoThreeTree<int>();
-            tree.Insert(50);
-            tree.Insert(35);
+            var tree = new TwoThreeTree<string>();
+            tree.Insert("A");
+            tree.Insert("B");
+            tree.Insert("C");
+            tree.Insert("D");
+            tree.Insert("E");
+            tree.Insert("F");
+            bool findElement = tree.Contains("F");
+            if (findElement == true)
+            {
+                Console.WriteLine("Yes");
+            }
+            else
+            {
+                Console.WriteLine("No");
+            }
+            
 
         }
     }

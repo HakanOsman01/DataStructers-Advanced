@@ -11,6 +11,44 @@
         {
             this.root = this.Insert(this.root, element);
         }
+        public bool Contains(T element)
+        {
+           return this.FindNode(this.root, element) != null;
+           
+        }
+
+        private TreeNode<T> FindNode(TreeNode<T> node, T element)
+        {
+            var currentNode = node;
+            while (currentNode != null)
+            {
+                if (currentNode.LeftKey != null && this.IsLesser(element, currentNode.LeftKey))
+                {
+                    currentNode = currentNode.LeftChild;
+                }
+                else if (currentNode.RightKey != null && currentNode.LeftKey != null &&
+                    this.IsLesser(element, currentNode.RightKey)
+                    && this.IsBigger(element, currentNode.LeftKey))
+                {
+                    currentNode = currentNode.MiddleChild;
+                }
+                else if (currentNode.RightKey != null && 
+                    this.IsBigger(element,currentNode.RightKey))
+                {
+                    currentNode= currentNode.RightChild;
+
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return currentNode;
+        }
+        private bool IsBigger(T element, T key)
+        {
+            return element.CompareTo(key) > 0;
+        }
 
         private TreeNode<T> Insert(TreeNode<T> node, T element)
         {
