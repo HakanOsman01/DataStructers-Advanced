@@ -130,24 +130,23 @@
         }
         private Node RotateLeft(Node node)
         {
-            var temp = node.Right;
-            temp.Left = node;
-            node.Right = temp.Right;
-            temp.Color = temp.Left.Color;
-            temp.Left.Color = Red;
-            return temp;
 
+            var temp = node.Right;
+            node.Right = temp.Left;
+            temp.Left = node;
+            temp.Color = temp.Left.Color;
+            temp.Color = Red;
+            return temp;
         }
         private Node RotateRight(Node node)
         {
             var temp = node.Left;
             node.Left = temp.Right;
-            temp.Right = node;
-            temp.Color = node.Right.Color;
-            temp.Color = Red;
-
+            temp.Right= node;
+            temp.Color = temp.Right.Color;
+            temp.Right.Color = Red;
             return temp;
-
+           
 
         }
         private bool IsRed(Node node)

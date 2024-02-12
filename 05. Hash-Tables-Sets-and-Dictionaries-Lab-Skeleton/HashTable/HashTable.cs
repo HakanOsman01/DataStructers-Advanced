@@ -67,16 +67,9 @@
         {
             if (((float)this.Count + 1) / this.Capacity >= LoadFactor)
             {
-                //var newHashTable=new HashTable<TKey,TValue>(this.Capacity*2);
-                //foreach (var element in this)
-                //{
-                //    newHashTable.Add(element.Key, element.Value);
-                //}
-                //this.slots = newHashTable.slots;
-                //this.Count = newHashTable.Count;
+              
                 var newHashTable=new HashTable<TKey,TValue>(this.Capacity*2,this);
                 this.slots = newHashTable.slots;
-
 
 
             }
@@ -184,11 +177,6 @@
             if (this.slots[index] != null)
 
             {
-                //this.slots[index] 
-                //    =new LinkedList<KeyValue<TKey, TValue>>(this.slots[index]
-                //    .Where(kv=>!kv.Key.Equals(key)));
-                //this.Count--;
-                //return true;
 
                 var linkedListNode = this.slots[index].First;
                 while (linkedListNode != null)

@@ -72,13 +72,15 @@
             {
                 var newNode = this.Insert(node.MiddleChild, element);
 
-                return newNode == node.MiddleChild ? node : this.MergeNodes(node, newNode);
+                return newNode == node.MiddleChild ? node 
+                    : this.MergeNodes(node, newNode);
             }
             else
             {
                 var newNode = this.Insert(node.RightChild, element);
 
-                return newNode == node.RightChild ? node : this.MergeNodes(node, newNode);
+                return newNode == node.RightChild ? node 
+                    : this.MergeNodes(node, newNode);
             }
         }
 
@@ -159,6 +161,47 @@
             StringBuilder sb = new StringBuilder();
             RecursivePrint(this.root, sb);
             return sb.ToString();
+        }
+        public string Dfs()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            int indent = 0;
+            this.Dfs(this.root, stringBuilder, indent);
+            return stringBuilder.ToString();
+        }
+
+        private void Dfs(TreeNode<T> node, StringBuilder stringBuilder, int indent)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            if (node.LeftKey != null)
+            {
+                stringBuilder.AppendLine(node.LeftKey.ToString())
+                    .Append(new string(' ',indent+1));
+            }
+            if(node.RightKey != null)
+            {
+                stringBuilder.AppendLine(node.RightKey.ToString())
+                    .Append(new string(' ', indent + 2));
+
+            }
+            
+            
+            if (node.IsTwoNode())
+            {
+                this.Dfs(node.LeftChild,stringBuilder,indent);
+                this.Dfs(node.MiddleChild,stringBuilder,indent);
+            }
+            else if (node.IsThreeNode())
+            {
+                this.Dfs(node.LeftChild, stringBuilder, indent);
+                this.Dfs(node.MiddleChild, stringBuilder, indent);
+                this.Dfs(node.RightChild, stringBuilder, indent);
+
+            }
+         
         }
 
         private void RecursivePrint(TreeNode<T> node, StringBuilder sb)
