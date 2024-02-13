@@ -140,12 +140,67 @@
 
         }
 
-        public void Delete(T key)
+        public void Delete(T element)
         {
             if (this.root == null)
             {
                 throw new InvalidOperationException();
             }
+            this.root = this.Delete(this.root, element);
+            if (this.root != null)
+            {
+                this.root.Color = Black;
+            }
+        }
+
+        private Node Delete(Node node, T element)
+        {
+            if (this.IsLesser(element, node.Value))
+            {
+                if(!this.IsRed(node.Left) && !this.IsRed(node.Left.Left))
+                {
+                    node=MoveRedLeft(node);
+                }
+                node.Left=this.Delete(node.Left,element);
+            }
+            else
+            {
+                if (this.IsRed(node.Left))
+                {
+                    node=this.RotateRight(node);
+                }
+                if (this.IsEqual(element,node.Value) && node.Right==null)
+                {
+
+                    return null;
+                }
+                if (!this.IsRed(node.Right) && !this.IsRed(node.Right.Left))
+                {
+                    node = this.MoveRedRight(node);
+                }
+                if (this.IsEqual(element,node.Value))
+                {
+                    node.Value = this.FindMinimumValueInSubtree(node.Right);
+                    node.Right=this.DeleteMin(node.Right);
+
+                }
+                else
+                {
+                    node.Right=this.Delete(node.Right,element);
+                }
+
+
+            }
+            return this.FixUp(node);
+        }
+
+        private T FindMinimumValueInSubtree(Node node)
+        {
+            if (node.Left == null)
+            {
+                return node.Value;
+            }
+            return FindMinimumValueInSubtree(node.Left);
         }
 
         public void DeleteMin()
@@ -265,8 +320,6 @@
             }
             return node;
         }
-
-
         private void ColorsFlip(Node node)
         {
             node.Color = !node.Color;
@@ -294,7 +347,7 @@
             temp.Right.Color=Red;
             return temp;
 
-        }
+        } 
         private bool IsRed(Node node)
         {
             if (node == null)
