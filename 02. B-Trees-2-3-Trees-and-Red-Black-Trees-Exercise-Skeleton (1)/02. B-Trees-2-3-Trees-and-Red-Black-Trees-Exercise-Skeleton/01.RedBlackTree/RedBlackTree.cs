@@ -42,6 +42,15 @@
             this.PreOrderCopy(node.Left);
             this.PreOrderCopy(node.Right);
         }
+        public bool Contains(T element)
+        {
+            var findNode = this.FindElement(this.root, element);
+            if (findNode != null)
+            {
+                return true;
+            }
+            return false;
+        }
 
         public void EachInOrder(Action<T> action)
         {
