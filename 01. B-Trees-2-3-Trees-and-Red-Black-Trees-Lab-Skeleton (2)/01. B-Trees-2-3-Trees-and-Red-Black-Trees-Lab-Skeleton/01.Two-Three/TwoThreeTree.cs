@@ -97,12 +97,12 @@
                 {
                     current.RightKey = node.LeftKey;
                     current.MiddleChild = node.LeftChild;
-                    current.RightChild = node.MiddleChild;
+                    current.RightChild=node.MiddleChild;
                 }
                 else
                 {
                     current.RightKey = current.LeftKey;
-                    current.RightChild = current.MiddleChild;
+                    current.RightChild=current.MiddleChild;
                     current.MiddleChild = node.MiddleChild;
                     current.LeftChild = node.LeftChild;
                     current.LeftKey = node.LeftKey;

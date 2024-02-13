@@ -27,6 +27,21 @@
         {
 
         }
+        private RedBlackTree(Node node)
+        {
+            this.PreOrderCopy(node);
+        }
+
+        private void PreOrderCopy(Node node)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            this.Insert(node.Value);
+            this.PreOrderCopy(node.Left);
+            this.PreOrderCopy(node.Right);
+        }
 
         public void EachInOrder(Action<T> action)
         {
@@ -37,17 +52,48 @@
         {
            if(node == null)
            {
-
                 return;
            }
            this.EachInOrder(node.Left, action);
-            action.Invoke(node.Value);
+           action.Invoke(node.Value);
            this.EachInOrder(node.Right, action);
         }
 
         public RedBlackTree<T> Search(T element)
         {
-            throw new NotImplementedException();
+           var node=this.FindElement(this.root, element);
+            if (node == null)
+            {
+                return new RedBlackTree<T>();
+            }
+            return new RedBlackTree<T>(node);
+        }
+
+        private Node FindElement(Node node, T element)
+        {
+            var currentNode = node;
+            while (currentNode != null)
+            {
+                if (this.IsEqual(element, currentNode.Value))
+                {
+                    return currentNode;
+                }
+                if (this.IsLesser(element, currentNode.Value))
+                {
+                    currentNode=currentNode.Left;
+                }
+                else if (this.IsLesser(currentNode.Value, element))
+                {
+                    currentNode = currentNode.Right;
+                }
+                else
+                {
+                    break;
+                }
+
+            }
+            return null;
+            
         }
 
         public void Insert(T value)
@@ -72,18 +118,21 @@
                 node.Right = this.Insert(node.Right, value);
 
             }
-            if (this.IsRed(node.Right))
+            if(this.IsRed(node.Right))
             {
-                node=this.RotateLeft(node);
+                node = this.RotateLeft(node);
+            
             }
-            if (this.IsRed(node.Left) && this.IsRed(node.Left.Left))
+            if(this.IsRed(node.Left) && this.IsRed(node.Left.Left))
             {
-                node=this.RotateRight(node);
+                node = this.RotateRight(node);
             }
-            if (this.IsRed(node.Left) && this.IsRed(node.Right))
+            if(this.IsRed(node.Left) && this.IsRed(node.Right))
             {
                 this.ColorsFlip(node);
             }
+
+         
 
             return node;
 
@@ -135,18 +184,17 @@
             node.Right = temp.Left;
             temp.Left = node;
             temp.Color = temp.Left.Color;
-            temp.Color = Red;
+            temp.Left.Color = Red;
             return temp;
         }
         private Node RotateRight(Node node)
         {
             var temp = node.Left;
             node.Left = temp.Right;
-            temp.Right= node;
-            temp.Color = temp.Right.Color;
-            temp.Right.Color = Red;
+            temp.Right = node;
+            temp.Color=temp.Right.Color;
+            temp.Right.Color=Red;
             return temp;
-           
 
         }
         private bool IsRed(Node node)

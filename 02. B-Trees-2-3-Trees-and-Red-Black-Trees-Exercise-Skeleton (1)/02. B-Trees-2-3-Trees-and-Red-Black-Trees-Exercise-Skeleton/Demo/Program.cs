@@ -7,6 +7,7 @@ namespace Demo
         static void Main()
         {
             var rbt = new RedBlackTree<int>();
+            rbt.Insert(5);
         }
     }
 }
