@@ -142,19 +142,75 @@
 
         public void Delete(T key)
         {
-            throw new NotImplementedException();
+            if (this.root == null)
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         public void DeleteMin()
         {
-            throw new NotImplementedException();
+            if (this.root == null)
+            {
+                throw new InvalidOperationException();
+            }
+            this.root = this.DeleteMin(this.root);
+            if (this.root != null)
+            {
+                this.root.Color = Black;
+            }
+           
         }
 
+        private Node DeleteMin(Node node)
+        {
+         
+            if (node.Left == null)
+            {
+                return null;
+            }
+            if(!this.IsRed(node.Left) && !this.IsRed(node.Left.Left))
+            {
+                node = this.MoveRedLeft(node);
+            }
+            node.Left=this.DeleteMin(node.Left);
+            return this.FixUp(node);
+        }
         public void DeleteMax()
         {
-            throw new NotImplementedException();
+
+            if (this.root == null)
+            {
+                throw new InvalidOperationException();
+            }
+            this.root = this.DeleteMax(this.root);
+            if (this.root != null)
+            {
+                this.root.Color = Black;
+            }
         }
 
+        private Node DeleteMax(Node node)
+        {
+            if (this.IsRed(node.Left))
+            {
+                node = this.RotateRight(node);
+            }
+
+            if (node.Right == null)
+            {
+                return null; 
+            }
+            if(!this.IsRed(node.Right) && !this.IsRed(node.Right.Left))
+            {
+                node = this.MoveRedRight(node);
+            }
+
+            node.Right=this.DeleteMax(node.Right);
+            return node;
+        }
+
+     
         public int Count()
         {
             return this.Count(this.root);
@@ -168,6 +224,48 @@
             }
             return 1+this.Count(root.Left)+this.Count(root.Right);
         }
+
+
+        //HelperMethod
+        private Node FixUp(Node node)
+        {
+            if (this.IsRed(node.Right))
+            {
+                node = this.RotateLeft(node);
+
+            }
+            if (this.IsRed(node.Left) && this.IsRed(node.Left.Left))
+            {
+                node = this.RotateRight(node);
+            }
+            if (this.IsRed(node.Left) && this.IsRed(node.Right))
+            {
+                this.ColorsFlip(node);
+            }
+            return node;
+        }
+        private Node MoveRedLeft(Node node)
+        {
+            this.ColorsFlip(node);
+            if (this.IsRed(node.Right.Left))
+            {
+                node.Right = this.RotateRight(node.Right);
+                node = this.RotateLeft(node);
+                this.ColorsFlip(node);
+            }
+            return node;
+        }
+        private Node MoveRedRight(Node node)
+        {
+            this.ColorsFlip(node);
+            if (this.IsRed(node.Left.Left))
+            {
+                node= this.RotateRight(node.Left);
+                this.ColorsFlip(node);
+            }
+            return node;
+        }
+
 
         private void ColorsFlip(Node node)
         {
@@ -206,7 +304,7 @@
             return node.Color == Red;
 
         }
-        //HelperMethod
+      
         private bool IsLesser(T a, T b)
         {
             return a.CompareTo(b) < 0;
