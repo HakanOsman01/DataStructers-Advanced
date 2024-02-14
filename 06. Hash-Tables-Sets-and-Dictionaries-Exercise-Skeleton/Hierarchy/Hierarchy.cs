@@ -3,20 +3,43 @@
     using System;
     using System.Collections.Generic;
     using System.Collections;
+    using System.Net.Http.Headers;
 
     public class Hierarchy<T> : IHierarchy<T>
     {
+        private List<Hierarchy<T>> childs;
+        private Hierarchy<T> parent;
+        private T value;
+        Dictionary<T,Hierarchy<T>> uniqueHierachy=new Dictionary<T,Hierarchy<T>>();
+        
+
         public Hierarchy(T value)
         {
-            throw new NotImplementedException();
+            this.value = value;
+            childs = new List<Hierarchy<T>>();
+            uniqueHierachy.Add(value, new Hierarchy<T>(value));
+
         }
 
-        public int Count => throw new NotImplementedException();
+
+        public int Count => uniqueHierachy.Count;
 
         public void Add(T element, T child)
         {
-            throw new NotImplementedException();
+            if (!uniqueHierachy.ContainsKey(element))
+            {
+                throw new InvalidOperationException();
+            }
+            if (uniqueHierachy[element].childs.Contains(new Hierarchy<T>(child)))
+            {
+                throw new InvalidOperationException();
+            }
+            uniqueHierachy[element].childs.Add(new Hierarchy<T>(child));
+            
+            
+            
         }
+   
 
         public bool Contains(T element)
         {
