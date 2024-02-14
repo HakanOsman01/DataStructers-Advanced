@@ -14,7 +14,7 @@ namespace RoyaleArena
         public void Add(BattleCard card)
         {
            bool isContaindCard=this.battleCards.ContainsKey(card.Id);
-            if (isContaindCard)
+            if (!isContaindCard)
             {
                 this.battleCards.Add(card.Id, card);
             }
@@ -40,12 +40,33 @@ namespace RoyaleArena
 
         public IEnumerable<BattleCard> FindFirstLeastSwag(int n)
         {
-            throw new NotImplementedException();
+            var cards = this.battleCards.Select(b => b.Value)
+                .OrderBy(b => b.Swag)
+                .Take(n)
+                .ToList();
+            if (cards.Count < n)
+            {
+                throw new InvalidOperationException();
+            }
+            for (int i = 0; i < cards.Count-1; i++)
+            {
+                if (cards[i].Swag == cards[i + 1].Swag)
+                {
+                    var temp = cards[i];
+                    cards[i] = cards[i+1];
+                    cards[i+1]= temp;
+                }
+            }
+            return cards;
         }
 
         public IEnumerable<BattleCard> GetAllInSwagRange(double lo, double hi)
         {
-            throw new NotImplementedException();
+           var cards=this.battleCards.Select(b=> b.Value).Where(c=>c.Swag>=lo
+           &&c.Swag<=hi)
+                .OrderBy(c=>c.Swag)
+                .ToList();
+            return cards;
         }
 
         public IEnumerable<BattleCard> GetByCardType(CardType type)
@@ -58,14 +79,26 @@ namespace RoyaleArena
             var cards=this.battleCards.Select(b=>b.Value)
                 .Where(b=>b.Type==type)
                 .OrderByDescending(b=>b.Damage)
-                .OrderBy(b=>b.Id)
+                .ThenBy(b=>b.Id)
                 .ToList();
             return cards;
         }
 
         public IEnumerable<BattleCard> GetByCardTypeAndMaximumDamage(CardType type, double damage)
         {
-            throw new NotImplementedException();
+          var anyCard=this.battleCards.Any(b=>b.Value.Type== type);
+            if (!anyCard)
+            {
+                throw new InvalidOperationException();
+            }
+            var cards=this.battleCards
+                .Select(b=>b.Value)
+                 .Where(b=>b.Type==type)
+                 .Where(b=>b.Damage<=damage)
+                 .OrderByDescending(c=>c.Damage)
+                 .ThenBy(c=>c.Id)
+                 .ToList();
+            return cards;
         }
 
         public BattleCard GetById(int id)
@@ -79,12 +112,34 @@ namespace RoyaleArena
 
         public IEnumerable<BattleCard> GetByNameAndSwagRange(string name, double lo, double hi)
         {
-            throw new NotImplementedException();
+            var anyCard=this.battleCards.Any(b=>b.Value.Name== name);
+            if (!anyCard)
+            {
+                throw new InvalidOperationException();
+            }
+            var cards = this.battleCards
+                .Select(b => b.Value)
+                .Where(c => c.Swag >= lo && c.Swag <= hi)
+                .OrderByDescending(c => c.Swag)
+                .ThenBy(c => c.Id)
+                .ToList();
+            return cards;
         }
 
         public IEnumerable<BattleCard> GetByNameOrderedBySwagDescending(string name)
         {
-            throw new NotImplementedException();
+           var anyCard=this.battleCards.Any(b=>b.Value.Name==name);
+            if (!anyCard)
+            {
+                throw new InvalidOperationException();
+            }
+            var cards=this.battleCards
+                .Select(b=>b.Value)
+                .Where(c=>c.Name==name)
+                .OrderByDescending(c=>c.Swag)
+                .ThenBy(c=>c.Id)
+                .ToList();
+            return cards;
         }
 
         public IEnumerable<BattleCard> 
@@ -97,6 +152,7 @@ namespace RoyaleArena
             }
             var cards=this.battleCards
                 .Select(b=>b.Value)
+                .Where(b=>b.Type==type)
                 .Where(c=>c.Damage>=lo && c.Damage<=hi)
                 .OrderByDescending(c=>c.Damage)
                 .ThenBy(c=>c.Id)
