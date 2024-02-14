@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections;
     using System.Net.Http.Headers;
+    using System.Linq;
 
     public class Hierarchy<T> : IHierarchy<T>
     {
@@ -18,6 +19,8 @@
             this.value = value;
             childs = new List<Hierarchy<T>>();
             uniqueHierachy.Add(value, new Hierarchy<T>(value));
+            uniqueHierachy[value].parent = this;
+            childs.Add(new Hierarchy<T>(value));
 
         }
 
@@ -28,13 +31,14 @@
         {
             if (!uniqueHierachy.ContainsKey(element))
             {
-                throw new InvalidOperationException();
+                throw new Exception();
             }
-            if (uniqueHierachy[element].childs.Contains(new Hierarchy<T>(child)))
+            if (uniqueHierachy[element].childs.Select(c=>c.value).Equals(child))
             {
-                throw new InvalidOperationException();
+                throw new Exception();
             }
             uniqueHierachy[element].childs.Add(new Hierarchy<T>(child));
+
             
             
             
