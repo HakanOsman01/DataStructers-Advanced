@@ -7,32 +7,79 @@ namespace AA_Tree
     {
         private class Node
         {
-            public Node(T element)
+            public Node(T value)
             {
-                this.Value = element;
+                this.Value = value;
                 this.Level = 1;
+                
             }
-
-            public T Value { get; set; }
             public Node Right { get; set; }
             public Node Left { get; set; }
-            public int Level { get;set; }
+            public T Value { get; set; }
+            public int Level { get; set; }
+        }
+        private Node root;
+
+        public bool Contains(T element)
+        {
+           var findNode=this.FindNode(this.root, element);  
+            if(findNode == null)
+            {
+                return false;
+            }
+            return true;
         }
 
-        private Node root;
+        private  Node FindNode(Node node, T element)
+        {
+            var currentNode = node;
+            while (currentNode != null)
+            {
+                if (this.IsLesser(element, currentNode.Value))
+                {
+                    currentNode=currentNode.Left;
+                }
+                else if (this.IsLesser(currentNode.Value, element))
+                {
+                    currentNode=currentNode.Right;
+
+                }
+                else
+                {
+                   return currentNode;
+                }
+            }
+            return null;
+        }
 
         public int Count()
         {
-            return this.Count(this.root);
+           return this.Count(this.root);
         }
 
-        private int Count(Node node)
+        private int Count(Node root)
         {
-            if (node == null) 
-            {
+           if(root == null)
+           {
                 return 0;
+           }
+           return 1+Count(root.Left)+Count(root.Right);
+        }
+
+        public void InOrder(Action<T> action)
+        {
+            this.InOrder(this.root, action);
+        }
+
+        private void InOrder(Node node, Action<T> action)
+        {
+            if (node == null)
+            {
+                return;
             }
-            return 1 +this.Count(node.Left)+this.Count(node.Right);
+            this.InOrder(node.Left, action);
+            action.Invoke(node.Value);
+            this.InOrder(node.Right, action);
         }
 
         public void Insert(T element)
@@ -46,34 +93,35 @@ namespace AA_Tree
             {
                 return new Node(element);
             }
-            if (element.CompareTo(node.Value) < 0)
+            if (this.IsLesser(element, node.Value))
             {
-                node.Left=this.Insert(node.Left, element);
+                node.Left = Insert(node.Left,element);
             }
             else
             {
-                node.Right = this.Insert(node.Right, element);
+                node.Right= Insert(node.Right,element);
             }
-            node = Skew(node);
-            node = Split(node);
+            node = this.Skew(node);
+            node = this.Split(node);
             return node;
-
 
         }
 
         private Node Split(Node node)
         {
-            if (node.Right==null || node.Right.Right==null)
+            if (node.Right == null || node.Right.Right == null)
             {
                 return node;
 
             }
-            else if (node.Right.Right.Level == node.Level)
+            if (node.Right.Right.Level == node.Level)
             {
                 node = RotateRight(node);
                 node.Level++;
             }
             return node;
+
+
         }
 
         private Node RotateRight(Node node)
@@ -88,57 +136,39 @@ namespace AA_Tree
         {
             if (node.Left != null && node.Left.Level==node.Level)
             {
-                node = this.RotateLeft(node);
+                node = RotateLeft(node);
             }
             return node;
         }
 
         private Node RotateLeft(Node node)
         {
-            var temp=node.Left;
-            node.Left = temp.Right;
-            temp.Right = node;
+            var temp=node.Left; 
+            node.Left= temp.Right;
+            temp.Right= node;
             return temp;
-
+          
         }
 
-        public bool Contains(T element)
+        private bool IsLesser(T a, T b)
         {
-            var currentNode=this.root;
-            while (currentNode != null)
-            {
-                if (element.CompareTo(currentNode.Value)==0) 
-                {
-                    return true;
-                }
-                else if(element.CompareTo(currentNode.Value) < 0)
-                {
-                    currentNode = currentNode.Left;
-                }
-                else if (element.CompareTo(currentNode.Value) > 0)
-                {
-                    currentNode=currentNode.Right;
-                }
-
-            }
-            return false;
+            return a.CompareTo(b) < 0;
         }
 
-        public void InOrder(Action<T> action)
+        public void PostOrder(Action<T> action)
         {
-            this.InOrder(this.root, action);
+            this.PostOrder(this.root, action);
         }
 
-        private void InOrder(Node node, Action<T> action)
+        private void PostOrder(Node node, Action<T> action)
         {
             if (node == null)
             {
                 return;
             }
-           
-            this.InOrder(node.Left, action);
+            this.PostOrder(node.Left, action);
+            this.PostOrder(node.Right, action);
             action.Invoke(node.Value);
-            this.InOrder(node.Right, action);
             
         }
 
@@ -155,27 +185,7 @@ namespace AA_Tree
             }
             action.Invoke(node.Value);
             this.PreOrder(node.Left, action);
-            this.PreOrder(node.Right, action);
-
-
-        }
-
-        public void PostOrder(Action<T> action)
-        {
-            this.PostOrder(this.root, action);
-
-        }
-
-        private void PostOrder(Node node, Action<T> action)
-        {
-           if(node == null)
-           {
-                return;
-           }
-           this.PostOrder(node.Left, action);
-           this.PostOrder(node.Right,action);
-           action.Invoke(node.Value);
-
+            this.PreOrder(node.Right,action);   
         }
     }
 } 
