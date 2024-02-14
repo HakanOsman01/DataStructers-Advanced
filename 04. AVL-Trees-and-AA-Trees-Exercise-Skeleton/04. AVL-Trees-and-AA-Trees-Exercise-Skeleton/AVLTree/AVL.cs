@@ -9,6 +9,7 @@
             public Node(T value)
             {
                 this.Value = value;
+                this.Height = 1;
             }
 
             public T Value { get; set; }
@@ -21,7 +22,25 @@
 
         public bool Contains(T element)
         {
-            throw new InvalidOperationException();
+            return this.Contains(this.Root, element) != null;
+        }
+
+        private Node Contains(Node node, T element)
+        {
+            if(node== null)
+            {
+                return null;
+            }
+            var compare = element.CompareTo(node.Value);
+            if (compare < 0)
+            {
+                return this.Contains(node.Left, element);
+            }
+            else if(compare>0)
+            {
+                return this.Contains(node.Right, element);
+            }
+            return node;
         }
 
         public void Delete(T element)
@@ -36,12 +55,99 @@
 
         public void Insert(T element)
         {
-            throw new InvalidOperationException();
+            this.Root = this.Insert(this.Root, element);
+        }
+
+        private Node Insert(Node node, T element)
+        {
+            if (node == null)
+            {
+                return new Node(element);
+            }
+            if (element.CompareTo(node.Value)<0)
+            {
+                node.Left= this.Insert(node.Left,element);
+            }
+            else
+            {
+                node.Right=Insert(node.Right, element);
+            }
+             node = this.Balance(node);
+             node.Height = Math.Max(Height(node.Left), Height(node.Right)) + 1;
+            return node;
+        }
+
+        private Node Balance(Node node)
+        {
+           var balanceFactor=Height(node.Left)-Height(node.Right);
+            if (balanceFactor > 1)
+            {
+                var childBalanceFactor = Height(node.Left.Left) 
+                    - Height(node.Left.Right);
+               
+                if (childBalanceFactor < 0)
+                {
+                    node.Left=RotateLeft(node.Left);
+                }
+                node = RotateRight(node);
+
+            }
+            else if (balanceFactor < -1)
+            {
+                var childBalanceFactor = Height(node.Right.Left) 
+                    - Height(node.Right.Right);
+                if (childBalanceFactor > 0)
+                {
+                    node.Right=RotateRight(node.Right);
+                }
+                node=RotateLeft(node);
+
+            }
+            return node;
+        }
+        private Node RotateLeft(Node node)
+        {
+            var temp = node.Right;
+            node.Right = temp.Left;
+            temp.Left = node;
+            node.Height = Math.Max(Height(node.Left), Height(node.Right)) + 1;
+            return temp;
+        }
+        private Node RotateRight(Node node)
+        {
+            var temp = node.Left;
+            node.Left = temp.Right;
+            temp.Right = node;
+            node.Height=Math.Max(Height(node.Left),Height(node.Right))+1;
+
+            return node;
         }
 
         public void EachInOrder(Action<T> action)
         {
-            throw new InvalidOperationException();
+            this.EachInOrder(this.Root, action);
+        }
+        //Helper Methods
+        public int Height(Node node)
+        {
+            if (node == null)
+            {
+                return 0;
+            }
+            return node.Height;
+
+        }
+
+        private void EachInOrder(Node node, Action<T> action)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            this.EachInOrder(node.Left, action);
+            action.Invoke(node.Value);
+            this.EachInOrder(node.Right, action);
+
         }
     }
 }
