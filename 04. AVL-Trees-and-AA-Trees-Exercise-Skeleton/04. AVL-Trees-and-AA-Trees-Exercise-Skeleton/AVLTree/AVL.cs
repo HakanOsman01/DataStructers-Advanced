@@ -72,8 +72,8 @@
             {
                 node.Right=Insert(node.Right, element);
             }
-             node = this.Balance(node);
-             node.Height = Math.Max(Height(node.Left), Height(node.Right)) + 1;
+            node = this.Balance(node);
+            node.Height = Math.Max(Height(node.Left), Height(node.Right)) + 1;
             return node;
         }
 
