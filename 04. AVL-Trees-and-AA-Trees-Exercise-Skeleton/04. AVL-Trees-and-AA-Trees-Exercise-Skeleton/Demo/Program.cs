@@ -13,6 +13,7 @@ namespace Demo
             tree.Insert(30);
             tree.Insert(50);
             tree.Insert(100);
+            tree.DeleteMax();
             tree.EachInOrder(value => Console.WriteLine(value));
 
         }

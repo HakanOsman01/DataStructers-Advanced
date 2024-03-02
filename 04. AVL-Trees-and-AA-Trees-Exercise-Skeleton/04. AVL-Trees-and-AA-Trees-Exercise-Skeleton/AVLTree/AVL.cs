@@ -19,12 +19,33 @@
             public int Height { get; set; }
            
         }
+        public AVL() {}
         public Node Root { get; private set; }
+        private AVL(Node node)
+        {
 
-      
+            this.PreOrderCopy(node);
+
+        }
+
+        private void PreOrderCopy(Node node)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            this.Insert(node.Value);
+            this.PreOrderCopy(node.Left);
+            this.PreOrderCopy(node.Right);
+        }
+
         public void DeleteMax()
         {
-            throw new NotImplementedException();
+            if (this.Root == null)
+            {
+                return;
+            }
+            this.Root = this.DeleteMax(this.Root);
         }
 
         
@@ -148,6 +169,30 @@
         {
             this.Root = this.Insert(this.Root, element);
         }
+        public int Count()
+        {
+            return this.Count(this.Root);
+        }
+
+        private int Count(Node node)
+        {
+            if (node == null)
+            {
+                return 0;
+            }
+            return 1+this.Count(node.Left)+this.Count(node.Right);
+        }
+
+
+        public AVL<T> Search(T value)
+        {
+            var findNode=this.Contains(this.Root,value);
+            if (findNode == null)
+            {
+                return new AVL<T>();
+            }
+            return new AVL<T>(findNode);
+        }
 
         private Node Insert(Node node, T element)
         {
@@ -170,11 +215,54 @@
             return node;
 
         }
+       
 
-      
+        private Node DeleteMax(Node node)
+        {
+            if (node.Right == null)
+            {
+                return node.Left;
+            }
+            node = Balance(node);
+            node.Height=Math.Max(Height(node.Left),Height(node.Right))+1;
+            node.Right = this.DeleteMax(node.Right);
+            return node;
+
+        }
+
         public void EachInOrder(Action<T> action)
         {
             this.EachInOrder(this.Root, action);
+        }
+        public void EachPreOrder(Action<T> action)
+        {
+            this.EachPreOrder(this.Root, action);
+        }
+        public void EachPostOrder(Action<T> action)
+        {
+            this.EachPostOrder(this.Root, action);
+        }
+
+        private void EachPostOrder(Node node, Action<T> action)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            this.EachPostOrder(node.Left, action);
+            this.EachPostOrder(node.Right, action);
+            action.Invoke(node.Value);
+        }
+
+        private void EachPreOrder(Node node, Action<T> action)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            action.Invoke(node.Value);
+            this.EachInOrder(node.Left, action);
+            this.EachInOrder(node.Right, action);
         }
 
         private void EachInOrder(Node node, Action<T> action)
