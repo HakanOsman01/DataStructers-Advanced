@@ -17,6 +17,9 @@ namespace Demo
             tree.Insert(6);
             Action<int>action=(a)=>Console.WriteLine(a);
             tree.PreOrder(action);
+            Console.WriteLine("======================");
+            tree.Delete(3);
+            tree.PreOrder(action);
         }
     }
 }

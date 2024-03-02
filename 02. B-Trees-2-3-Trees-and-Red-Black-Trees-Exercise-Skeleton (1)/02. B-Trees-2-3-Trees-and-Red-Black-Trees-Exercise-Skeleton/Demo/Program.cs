@@ -11,15 +11,7 @@ namespace Demo
             rbt.Insert(10);
             rbt.Insert(20);
             rbt.Insert(15);
-            var contains=rbt.Contains(0);
-            if (contains)
-            {
-                Console.WriteLine("Yes");
-            }
-            else
-            {
-                Console.WriteLine("No");
-            }
+           
         }
     }
 }

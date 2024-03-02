@@ -176,7 +176,119 @@ namespace AA_Tree
         {
             this.PreOrder(this.root, action);
         }
+        public void Delete(T key)
+        {
+            if (this.root == null)
+            {
+                throw new InvalidOperationException();
+            }
+            this.root = Delete(this.root, key);
+        }
 
+        private Node Delete(Node node, T key)
+        {
+            if (node == null)
+            {
+                return null;
+            }
+            if (key.CompareTo(node.Value) < 0)
+            {
+                node.Left=this.Delete(node.Left,key);
+            }
+            else if (key.CompareTo(node.Value) > 0)
+            {
+                node.Right = this.Delete(node.Right, key);
+            }
+            else
+            {
+                if (this.IsLeaf(node))
+                {
+                    return null;
+                }
+                if (node.Right == null)
+                {
+                    return node.Left;
+                }
+                if (node.Left == null)
+                {
+                    return node.Right;
+                }
+                var temp = node;
+                node = this.ReplaceWithSuccessors(temp.Right);
+                node.Right = this.DeleteMinNode(temp.Right);
+                node.Left=temp.Left;
+
+            }
+            return this.FixUp(node);
+
+            
+        
+        }
+
+        private Node FixUp(Node node)
+        {
+            if (this.IsOneLevelDown(node))
+            {
+                node.Level--;
+                if (node.Right != null && node.Right.Level>node.Level-1)
+                {
+                   node.Right.Level--;
+                }
+            }
+            node=this.Skew(node);
+            node.Right = this.Skew(node.Right);
+            node.Right.Right=this.Skew(node.Right.Right);
+
+            node = this.Split(node);
+            node.Right = this.Split(node.Right);
+
+            return node;
+        }
+
+        private bool IsOneLevelDown(Node node)
+        {
+            if (node.Left!=null && node.Left.Level < node.Level-1)
+            {
+                return true;
+            }
+            if(node.Right != null && node.Right.Level  < node.Level-1)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        private Node ReplaceWithSuccessors(Node node)
+        {
+            if (node.Left == null)
+            {
+                return node;
+            }
+            return this.ReplaceWithSuccessors(node.Left);
+        }
+
+        private bool IsLeaf(Node node)
+        {
+            if(node.Left== null && node.Right == null)
+            {
+                return true;
+            }
+            return false;
+        }
+        private Node DeleteMinNode(Node node)
+        {
+            if (node.Left == null)
+            {
+                return null;
+            }
+            node.Left = this.DeleteMinNode(node.Left);
+            return node;
+        }
+        
+
+       
+       
+       
         private void PreOrder(Node node, Action<T> action)
         {
             if (node == null)
