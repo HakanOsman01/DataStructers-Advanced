@@ -11,6 +11,7 @@
                 this.Value = value;
                 this.Height = 1;
             }
+            
 
             public T Value { get; set; }
             public Node Left { get; set; }
@@ -20,7 +21,7 @@
         }
         public Node Root { get; private set; }
 
-
+      
         public void DeleteMax()
         {
             throw new NotImplementedException();
@@ -56,18 +57,91 @@
 
         public void Delete(T element)
         {
-            if (this.Root == null)
+            this.Root = this.Delete(this.Root, element);
+        }
+
+        private Node Delete(Node node, T element)
+        {
+            if (node == null)
             {
-                throw new InvalidOperationException();
+                return null;
             }
+            else if (element.CompareTo(node.Value) < 0)
+            {
+                node.Left=this.Delete(node.Left, element);
+            }
+            else if (element.CompareTo(node.Value) > 0)
+            {
+                node.Right=this.Delete(node.Right, element);
+            }
+            else
+            {
+               
+                if (node.Right == null && node.Left==null)
+                {
+
+                    return null;
+                }
+                else if(node.Right == null)
+                {
+                    return node.Left;
+                }
+                else if (node.Left == null)
+                {
+                    return node.Right;
+                }
+                else
+                {
+                    Node temp = this.FindSmallestChild(node.Right);
+                    node.Value=temp.Value;
+                    node.Right = this.Delete(node.Right, temp.Value);
+
+                }
+              
+
+            }
+            node=this.Balance(node);
+            node.Height = Math.Max(Height(node.Left), Height(node.Right)) + 1;
+            return node;
+
+        }
+
+        private Node FindSmallestChild(Node node)
+        {
+            if (node.Left == null)
+            {
+                return node;
+            }
+            return this.FindSmallestChild(node.Left);
         }
 
         public void DeleteMin()
         {
             if (this.Root == null)
             {
-                throw new InvalidOperationException();
+                return;
             }
+            else
+            {
+                this.Root = this.DeleteMin(this.Root);
+            }
+           
+            
+        }
+
+        private Node DeleteMin(Node node)
+        {
+            if (node.Left==null)
+            {
+
+                return node.Right;
+
+            }
+            node.Left = this.DeleteMin(node.Left);
+            node = this.Balance(node);
+            node.Height = Math.Max(Height(node.Left), Height(node.Right)) + 1;
+            return node;
+            
         }
 
         public void Insert(T element)
