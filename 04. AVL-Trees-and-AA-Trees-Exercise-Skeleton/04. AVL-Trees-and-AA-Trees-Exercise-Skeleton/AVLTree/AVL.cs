@@ -324,7 +324,7 @@
                     node.Right=RightRotation(node.Right);
                 }
 
-                node =LeftRotation(node);
+                node=LeftRotation(node);
 
             }
             return node;

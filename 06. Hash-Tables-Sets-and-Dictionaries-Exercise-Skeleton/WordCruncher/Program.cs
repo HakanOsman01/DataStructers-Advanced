@@ -9,49 +9,54 @@ namespace WordCruncher
        
         static void Main()
         {
-            string[]words=Console.ReadLine()
-                .Split(", ")
-                .Distinct()
-                .ToArray();
-
-            string formatedWords=Console.ReadLine();
-            Permution(words, formatedWords,0,words.Length-1);
-
+           var syllables=Console.ReadLine()
+           .Split(", ",StringSplitOptions.RemoveEmptyEntries);
+            var targetWord=Console.ReadLine();
+            var cruncher=new Cruncher(syllables, targetWord);
         }
-        private static void Permution(string[] words
-            ,string formatedString,int start,int end )
+      
+    }
+    class Cruncher
+    {
+        private class Node
         {
-            if (string.Join("", words) == formatedString)
+            public Node(string syllable,List<Node>nextSyllables)
             {
-                Console.WriteLine(string.Join(" ",words));
-                return;
+                this.Syllable = syllable;
+                this.NextSyllables = nextSyllables;
             }
+            public string Syllable { get; set; }
+            public List<Node> NextSyllables { get; set; }
+        }
+        
+      
+        private List<Node> syllableGroups { get; set; }
+        public Cruncher(string[] syllables, string targetWord)
+        {
+           this.syllableGroups=this.GenerateSyllablesGroups(syllables, targetWord);
+        }
 
-            Permution(words, formatedString, start + 1, end);
-            HashSet<string> uniqueWords = new HashSet<string>{string.Join(" ", words)};
-            for (int i = start+1; i <=end; i++)
+        private List<Node> GenerateSyllablesGroups(string[] syllables, string targetWord)
+        {
+           if(string.IsNullOrEmpty(targetWord) || syllables.Length == 0)
+           {
+                return null;
+           }
+           var resultValues=new List<Node>();
+            for (int i = 0; i < syllables.Length; i++)
             {
+                var syllable = syllables[i];
 
-
-                if (!uniqueWords.Contains(string.Join(" ",words)))
+                if (targetWord.StartsWith(syllable))
                 {
-                    Swap(words, start, i);
-                    Permution(words, formatedString, start + 1, end);
-                    Swap(words, start, i);
+                    var nextSyllable = this.GenerateSyllablesGroups();
+                    resultValues.Add(new Node(syllable, nextSyllable));
 
                 }
-                 
-                
-               
-            }
-          
 
-        }
-        private static void Swap(string[]words,int firstIndex,int secondIndex)
-        {
-            var swap = words[firstIndex];
-            words[firstIndex] = words[secondIndex];
-            words[secondIndex] = swap;
+
+
+            }
         }
     }
 }

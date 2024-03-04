@@ -14,8 +14,6 @@
 
         public int Capacity => this.slots.Length;
 
-       
-
         public HashTable()
             : this(DefaultCapacity)
         {
@@ -244,6 +242,6 @@
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() =>this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

@@ -66,7 +66,8 @@
             {
                 var newNode = this.Insert(node.LeftChild, element);
 
-                return newNode == node.LeftChild ? node : this.MergeNodes(node, newNode);
+                return newNode == node.LeftChild ? node 
+                    : this.MergeNodes(node, newNode);
             }
             else if (node.IsTwoNode() || IsLesser(element, node.RightKey))
             {

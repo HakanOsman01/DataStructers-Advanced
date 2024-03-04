@@ -3,81 +3,142 @@
     using System;
     using System.Collections.Generic;
     using System.Collections;
-    using System.Net.Http.Headers;
     using System.Linq;
 
     public class Hierarchy<T> : IHierarchy<T>
     {
-        private List<Hierarchy<T>> childs;
-        private Hierarchy<T> parent;
-        private T value;
-        Dictionary<T,Hierarchy<T>> uniqueHierachy=new Dictionary<T,Hierarchy<T>>();
-        
+        private class Node
+        {
+            public T Value { get; set; }
+            public Node Parent { get; set; }
+            public List<Node> Children { get; set; }
+
+            public Node(T value)
+            {
+                this.Value = value;
+                this.Children = new List<Node>();
+            }
+        }
+
+        private Node root;
+        private Dictionary<T, Node> nodesByValue;
 
         public Hierarchy(T value)
         {
-            this.value = value;
-            childs = new List<Hierarchy<T>>();
-            uniqueHierachy.Add(value, new Hierarchy<T>(value));
-            uniqueHierachy[value].parent = this;
-            childs.Add(new Hierarchy<T>(value));
-
+            this.root = new Node(value);
+            this.nodesByValue = new Dictionary<T, Node>();
+            this.nodesByValue.Add(value, this.root);
         }
 
-
-        public int Count => uniqueHierachy.Count;
+        public int Count => this.nodesByValue.Count;
 
         public void Add(T element, T child)
         {
-            if (!uniqueHierachy.ContainsKey(element))
+            if (!nodesByValue.ContainsKey(element) || nodesByValue.ContainsKey(child))
             {
-                throw new Exception();
+                throw new ArgumentException();
             }
-            if (uniqueHierachy[element].childs.Select(c=>c.value).Equals(child))
-            {
-                throw new Exception();
-            }
-            uniqueHierachy[element].childs.Add(new Hierarchy<T>(child));
 
-            
-            
-            
+            var node = new Node(child)
+            {
+                Parent = nodesByValue[element]
+            };
+
+            nodesByValue.Add(child, node);
+            nodesByValue[element].Children.Add(node);
         }
-   
 
         public bool Contains(T element)
         {
-            throw new NotImplementedException();
+            return this.nodesByValue.ContainsKey(element);
         }
 
         public IEnumerable<T> GetChildren(T element)
         {
-            throw new NotImplementedException();
+            if (!this.nodesByValue.ContainsKey(element))
+            {
+                throw new ArgumentException();
+            }
+
+            return nodesByValue[element].Children.Select(x => x.Value);
         }
 
         public IEnumerable<T> GetCommonElements(Hierarchy<T> other)
         {
-            throw new NotImplementedException();
-        }
+            //var keys = new List<T>();
+            //foreach (var key in this.nodesByValue.Keys)
+            //{
+            //    if (other.nodesByValue.ContainsKey(key))
+            //    {
+            //        keys.Add(key);
+            //    }
+            //}
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            throw new NotImplementedException();
+            //return keys;
+
+            return this.nodesByValue.Keys.Intersect(other.nodesByValue.Keys);
         }
 
         public T GetParent(T element)
         {
-            throw new NotImplementedException();
+            if (!this.nodesByValue.ContainsKey(element))
+            {
+                throw new ArgumentException();
+            }
+
+            if (this.nodesByValue[element].Parent == null)
+            {
+                return default;
+            }
+
+            return this.nodesByValue[element].Parent.Value;
         }
 
         public void Remove(T element)
         {
-            throw new NotImplementedException();
+            if (element.Equals(this.root.Value))
+            {
+                throw new InvalidOperationException();
+            }
+
+            if (!nodesByValue.ContainsKey(element))
+            {
+                throw new ArgumentException();
+            }
+
+            var node = this.nodesByValue[element];
+            var parentNode = node.Parent;
+
+            parentNode.Children.Remove(node);
+            parentNode.Children.AddRange(node.Children);
+
+            foreach (var child in node.Children)
+            {
+                this.nodesByValue[child.Value].Parent = parentNode;
+            }
+
+            this.nodesByValue.Remove(element);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+        public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            var queue = new Queue<Node>();
+
+            queue.Enqueue(this.root);
+
+            while (queue.Count != 0)
+            {
+                var current = queue.Dequeue();
+
+                yield return current.Value;
+
+                foreach (var child in current.Children)
+                {
+                    queue.Enqueue(child);
+                }
+            }
         }
     }
 }

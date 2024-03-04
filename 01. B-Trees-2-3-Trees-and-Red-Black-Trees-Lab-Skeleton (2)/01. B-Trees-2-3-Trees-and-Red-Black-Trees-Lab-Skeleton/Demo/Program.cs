@@ -8,22 +8,28 @@ namespace Demo
     {
         static void Main()
         {
-            var tree = new TwoThreeTree<IntDemo>();
+            //var tree = new TwoThreeTree<IntDemo>();
 
-            tree.Insert(new IntDemo(10));
-            tree.Insert(new IntDemo(20));
-            tree.Insert(new IntDemo(15));
-            tree.Insert(new IntDemo(35));
-            tree.Insert(new IntDemo(40));
-            tree.Insert(new IntDemo(304));
-            tree.Insert(new IntDemo(4));
-            tree.Insert(new IntDemo(355));
-            tree.Insert(new IntDemo(139));
-            tree.Insert(new IntDemo(39));
-            tree.Insert(new IntDemo(1000));
-            tree.Insert(new IntDemo(99));
-            string output = tree.Dfs();
+            //tree.Insert(new IntDemo(10));
+            //tree.Insert(new IntDemo(20));
+            //tree.Insert(new IntDemo(15));
+            //tree.Insert(new IntDemo(35));
+            //tree.Insert(new IntDemo(40));
+            //tree.Insert(new IntDemo(304));
+            //tree.Insert(new IntDemo(4));
+            //tree.Insert(new IntDemo(355));
+            //tree.Insert(new IntDemo(139));
+            //tree.Insert(new IntDemo(39));
+            //tree.Insert(new IntDemo(1000));
+            //tree.Insert(new IntDemo(99));
+            var tree = new TwoThreeTree<Employee>();
+            tree.Insert(new Employee("Hakan", 22, 100000));
+            tree.Insert(new Employee("Todor Ganchev", 57, 200000));
+            tree.Insert(new Employee("Prof Aleksieva", 30, 10));
+            string output= tree.ToString();
             Console.WriteLine(output);
+
+
 
         }
         
@@ -42,6 +48,28 @@ namespace Demo
         public override string ToString()
         {
             return $"{this.Value}";
+        }
+
+    }
+    public class Employee : IComparable<Employee>
+    {
+        public Employee(string name,int age,decimal salary)
+        {
+            this.Name = name;
+            this.Age = age;
+            this.Salary = salary;
+        }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public decimal Salary { get; set; }
+        public int CompareTo( Employee other)
+        {
+            return this.Salary.CompareTo(other.Salary);
+
+        }
+        public override string ToString()
+        {
+            return $"{Name}-{Age}{Salary:f2}";
         }
 
     }
