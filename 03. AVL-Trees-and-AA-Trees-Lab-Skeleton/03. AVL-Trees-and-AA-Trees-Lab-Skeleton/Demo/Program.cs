@@ -9,17 +9,19 @@ namespace Demo
         static void Main(string[] args)
         {
             var tree = new AATree<int>();
-            tree.Insert(1);
-            tree.Insert(2);
-            tree.Insert(3);
-            tree.Insert(4);
-            tree.Insert(5);
             tree.Insert(6);
-            Action<int>action=(a)=>Console.WriteLine(a);
-            tree.PreOrder(action);
+            tree.Insert(2);
+            tree.Insert(8);
+            tree.Insert(16);
+            tree.Insert(10);
+            tree.InOrder(a => Console.WriteLine(a));
             Console.WriteLine("======================");
-            tree.Delete(3);
-            tree.PreOrder(action);
+            tree.Delete(10);
+            tree.InOrder(a => Console.WriteLine(a));
+
+
+
+
         }
     }
 }

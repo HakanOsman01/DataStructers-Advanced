@@ -47,7 +47,7 @@
             }
             this.Root = this.DeleteMax(this.Root);
         }
-
+        
         
         public bool Contains(T element)
         {
@@ -113,9 +113,15 @@
                 }
                 else
                 {
-                    Node temp = this.FindSmallestChild(node.Right);
-                    node.Value=temp.Value;
-                    node.Right = this.Delete(node.Right, temp.Value);
+                    //Node temp = this.FindSmallestChild(node.Right);
+                    //node.Value=temp.Value;
+                    //node.Right = this.Delete(node.Right, temp.Value);
+
+
+                    var temp = node;
+                    node=this.FindSmallestChild(temp.Right);
+                    node.Right = this.DeleteMin(temp.Right);
+                    node.Left = temp.Left;
 
                 }
               

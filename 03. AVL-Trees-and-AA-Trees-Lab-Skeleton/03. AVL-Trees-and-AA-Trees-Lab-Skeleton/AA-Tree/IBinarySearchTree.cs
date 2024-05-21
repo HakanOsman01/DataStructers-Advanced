@@ -15,5 +15,6 @@
         void PreOrder(Action<T> action);
 
         void PostOrder(Action<T> action);
+        void Delete(T key);
     }
 }

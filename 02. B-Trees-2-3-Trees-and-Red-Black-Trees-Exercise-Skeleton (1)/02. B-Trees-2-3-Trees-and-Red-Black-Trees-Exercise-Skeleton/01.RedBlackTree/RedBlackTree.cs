@@ -4,7 +4,7 @@
 
     public class RedBlackTree<T> where T : IComparable
     {
-        private const bool Red=true;
+        private const bool Red = true;
         private const bool Black = true;
 
         public class Node
@@ -228,17 +228,18 @@
 
         private Node DeleteMin(Node node)
         {
-         
+
             if (node.Left == null)
             {
                 return null;
+
             }
             if(!this.IsRed(node.Left) && !this.IsRed(node.Left.Left))
             {
-                node = this.MoveRedLeft(node);
+                node=MoveRedLeft(node);
             }
             node.Left=this.DeleteMin(node.Left);
-            return this.FixUp(node);
+            return FixUp(node);
         }
         public void DeleteMax()
         {
@@ -324,7 +325,7 @@
             this.ColorsFlip(node);
             if (this.IsRed(node.Left.Left))
             {
-                node= this.RotateRight(node.Left);
+                node=this.RotateRight(node.Left);
                 this.ColorsFlip(node);
             }
             return node;

@@ -66,21 +66,21 @@
             {
                 var newNode = this.Insert(node.LeftChild, element);
 
-                return newNode == node.LeftChild ? node 
+                return newNode == node.LeftChild ? node
                     : this.MergeNodes(node, newNode);
             }
             else if (node.IsTwoNode() || IsLesser(element, node.RightKey))
             {
                 var newNode = this.Insert(node.MiddleChild, element);
 
-                return newNode == node.MiddleChild ? node 
+                return newNode == node.MiddleChild ? node
                     : this.MergeNodes(node, newNode);
             }
             else
             {
                 var newNode = this.Insert(node.RightChild, element);
 
-                return newNode == node.RightChild ? node 
+                return newNode == node.RightChild ? node
                     : this.MergeNodes(node, newNode);
             }
         }
