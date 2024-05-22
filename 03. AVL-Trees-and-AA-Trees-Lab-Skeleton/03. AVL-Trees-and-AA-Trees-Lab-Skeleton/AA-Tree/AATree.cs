@@ -1,10 +1,15 @@
 namespace AA_Tree
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Text;
 
     public class AATree<T> : IBinarySearchTree<T>
         where T : IComparable<T>
     {
+       
+       
         private class Node
         {
             public Node(T value)
@@ -192,6 +197,7 @@ namespace AA_Tree
         {
             this.root=this.Delete(key,this.root);
         }
+     
 
         private Node Delete(T element, Node node)
         {
@@ -209,20 +215,28 @@ namespace AA_Tree
             }
             else
             {
-                if (node.Right == null)
+                if(node.Right==null && node.Left == null)
+                {
+                    return null;
+                }
+                else  if (node.Right == null)
                 {
                     return node.Left;
                 }
-                if(node.Left == null)
+                else if(node.Left == null)
                 {
                     return node.Right;
                 }
-                var temp = node;
-                node = this.FindMinNode(temp.Right);
-                node.Right=this.DeleteMinNode(temp.Right);
-                node.Left = temp.Left;
-                node = FixUp(node);
+                else
+                {
+                    var temp = node;
+                    node = this.FindMinNode(temp.Right);
+                    node.Right = this.DeleteMinNode(temp.Right);
+                    node.Left = temp.Left;
+                }
+               
             }
+            node = FixUp(node);
           
             return node;
 
@@ -233,18 +247,19 @@ namespace AA_Tree
            {
                 if (node.Left.Level < node.Level - 1 || node.Right.Level < node.Level - 1)
                 {
-                    if (node.Right.Level > --node.Level)
+                    if (node.Right.Level >  --node.Level)
                     {
                         node.Right.Level = node.Level;
                     }
                 }
-            }
+                node = Skew(node);
+                node.Right = Skew(node.Right);
+                node.Right.Right = Skew(node.Right.Right);
+                node = Split(node);
+                node.Right = Split(node.Right);
+           }
           
-            node = Skew(node);
-            node.Right = Skew(node.Right);
-            node.Right.Right= Skew(node.Right.Right);
-            node = Split(node);
-            node.Right = Split(node.Right);
+           
             return node;
         }
        
@@ -267,6 +282,27 @@ namespace AA_Tree
             }
 
             return FindMinNode(node.Left);
+        }
+        public string PrintRecursively(int indent)
+        {
+            StringBuilder sb=new StringBuilder();
+            this.PrintRecursively(this.root, sb,indent);
+            return sb.ToString().Trim();
+        }
+
+        private void PrintRecursively(Node node, StringBuilder sb, int indent)
+        {
+            sb.Append(new string(' ',indent))
+                .AppendLine(node.Value.ToString());
+            if(node.Left != null)
+            {
+                this.PrintRecursively(node.Left, sb, indent+2);
+            }
+
+            if(node.Right != null)
+            {
+                this.PrintRecursively(node.Right, sb, indent + 2);
+            }
         }
     }
 } 
