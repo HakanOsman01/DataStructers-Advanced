@@ -13,42 +13,57 @@
         }
         public bool Contains(T element)
         {
-           return this.FindNode(this.root, element) != null;
+            var node = this.FindNode(element);
+           return node != null;
            
         }
 
-        private TreeNode<T> FindNode(TreeNode<T> node, T element)
+        private TreeNode<T> FindNode(T element)
         {
-            var currentNode = node;
+            var currentNode = this.root;
             while (currentNode != null)
             {
-                if (currentNode.LeftKey != null && this.IsLesser(element, currentNode.LeftKey))
+                if (currentNode.IsTwoNode())
                 {
-                    currentNode = currentNode.LeftChild;
-                }
-                else if (currentNode.RightKey != null && currentNode.LeftKey != null &&
-                    this.IsLesser(element, currentNode.RightKey)
-                    && this.IsBigger(element, currentNode.LeftKey))
-                {
-                    currentNode = currentNode.MiddleChild;
-                }
-                else if (currentNode.RightKey != null && 
-                    this.IsBigger(element,currentNode.RightKey))
-                {
-                    currentNode= currentNode.RightChild;
-
+                    if (element.CompareTo(currentNode.LeftKey) < 0)
+                    {
+                        currentNode = currentNode.LeftChild;
+                    }
+                    else if (element.CompareTo(currentNode.LeftKey) > 0)
+                    {
+                        currentNode = currentNode.MiddleChild;
+                    }
+                    else
+                    {
+                        return currentNode;
+                    }
                 }
                 else
                 {
-                    break;
+                    if (element.CompareTo(currentNode.LeftKey) < 0)
+                    {
+                        currentNode = currentNode.LeftChild;
+                    }
+                    else if (element.CompareTo(currentNode.LeftKey) > 0  && 
+                        element.CompareTo(currentNode.RightKey)<0)
+                    {
+                        currentNode = currentNode.MiddleChild;
+                    }
+                    else if(element.CompareTo(currentNode.RightKey)>0)
+                    {
+                        currentNode = currentNode.RightChild;
+                    }
+                    else
+                    {
+                        return currentNode;
+                    }
                 }
             }
-            return currentNode;
+            return null;
         }
-        private bool IsBigger(T element, T key)
-        {
-            return element.CompareTo(key) > 0;
-        }
+
+      
+       
 
         private TreeNode<T> Insert(TreeNode<T> node, T element)
         {
@@ -163,47 +178,7 @@
             RecursivePrint(this.root, sb);
             return sb.ToString();
         }
-        public string Dfs()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            int indent = 0;
-            this.Dfs(this.root, stringBuilder, indent);
-            return stringBuilder.ToString();
-        }
-
-        private void Dfs(TreeNode<T> node, StringBuilder stringBuilder, int indent)
-        {
-            if (node == null)
-            {
-                return;
-            }
-            if (node.LeftKey != null)
-            {
-                stringBuilder.AppendLine(node.LeftKey.ToString())
-                    .Append(new string(' ',indent+1));
-            }
-            if(node.RightKey != null)
-            {
-                stringBuilder.AppendLine(node.RightKey.ToString())
-                    .Append(new string(' ', indent + 2));
-
-            }
-            
-            
-            if (node.IsTwoNode())
-            {
-                this.Dfs(node.LeftChild,stringBuilder,indent);
-                this.Dfs(node.MiddleChild,stringBuilder,indent);
-            }
-            else if (node.IsThreeNode())
-            {
-                this.Dfs(node.LeftChild, stringBuilder, indent);
-                this.Dfs(node.MiddleChild, stringBuilder, indent);
-                this.Dfs(node.RightChild, stringBuilder, indent);
-
-            }
-         
-        }
+       
 
         private void RecursivePrint(TreeNode<T> node, StringBuilder sb)
         {

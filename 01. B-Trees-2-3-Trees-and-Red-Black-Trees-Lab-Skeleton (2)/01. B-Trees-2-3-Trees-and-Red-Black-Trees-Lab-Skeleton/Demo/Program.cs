@@ -26,7 +26,8 @@ namespace Demo
             tree.Insert(new Employee("Hakan", 22, 100000));
             tree.Insert(new Employee("Todor Ganchev", 57, 200000));
             tree.Insert(new Employee("Prof Aleksieva", 30, 10));
-            string output= tree.ToString();
+            var employee = new Employee("Hakai", 22, 100001);
+            var output= tree.Contains(employee);
             Console.WriteLine(output);
 
 

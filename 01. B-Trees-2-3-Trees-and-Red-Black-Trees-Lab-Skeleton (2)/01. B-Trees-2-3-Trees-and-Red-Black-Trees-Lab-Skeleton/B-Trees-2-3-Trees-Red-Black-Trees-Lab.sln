@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Two-Three", "01.Two-Thre
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "01.Two-Three.Tests", "01.Two-Three.Tests\01.Two-Three.Tests.csproj", "{1BFF56BF-ADC7-4C37-9525-6D10BA0A8D2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The", "The\The.csproj", "{B47AAE2F-AC22-4FDF-B032-4FB2E5AFA14C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Heap", "The\Heap.csproj", "{B47AAE2F-AC22-4FDF-B032-4FB2E5AFA14C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
