@@ -6,10 +6,12 @@
     public class TwoThreeTree<T> where T : IComparable<T>
     {
         private TreeNode<T> root;
-
+        public int Count { get;private set; }
         public void Insert(T element)
         {
             this.root = this.Insert(this.root, element);
+            this.Count++;
+           
         }
         public bool Contains(T element)
         {
@@ -61,10 +63,6 @@
             }
             return null;
         }
-
-      
-       
-
         private TreeNode<T> Insert(TreeNode<T> node, T element)
         {
             if (node == null)
@@ -98,6 +96,7 @@
                 return newNode == node.RightChild ? node
                     : this.MergeNodes(node, newNode);
             }
+            
         }
 
         private bool IsLesser(T element, T key)
@@ -213,5 +212,8 @@
                 RecursivePrint(node.RightChild, sb);
             }
         }
+      
+
+       
     }
 }

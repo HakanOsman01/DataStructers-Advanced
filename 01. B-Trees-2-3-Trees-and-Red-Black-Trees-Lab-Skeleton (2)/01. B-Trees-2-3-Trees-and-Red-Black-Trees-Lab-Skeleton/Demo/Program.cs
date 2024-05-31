@@ -8,27 +8,21 @@ namespace Demo
     {
         static void Main()
         {
-            //var tree = new TwoThreeTree<IntDemo>();
+            var tree = new TwoThreeTree<IntDemo>();
 
-            //tree.Insert(new IntDemo(10));
-            //tree.Insert(new IntDemo(20));
-            //tree.Insert(new IntDemo(15));
-            //tree.Insert(new IntDemo(35));
-            //tree.Insert(new IntDemo(40));
-            //tree.Insert(new IntDemo(304));
-            //tree.Insert(new IntDemo(4));
-            //tree.Insert(new IntDemo(355));
-            //tree.Insert(new IntDemo(139));
-            //tree.Insert(new IntDemo(39));
-            //tree.Insert(new IntDemo(1000));
-            //tree.Insert(new IntDemo(99));
-            var tree = new TwoThreeTree<Employee>();
-            tree.Insert(new Employee("Hakan", 22, 100000));
-            tree.Insert(new Employee("Todor Ganchev", 57, 200000));
-            tree.Insert(new Employee("Prof Aleksieva", 30, 10));
-            var employee = new Employee("Hakai", 22, 100001);
-            var output= tree.Contains(employee);
-            Console.WriteLine(output);
+            tree.Insert(new IntDemo(10));
+            tree.Insert(new IntDemo(20));
+            tree.Insert(new IntDemo(15));
+            tree.Insert(new IntDemo(35));
+            tree.Insert(new IntDemo(40));
+            tree.Insert(new IntDemo(304));
+            tree.Insert(new IntDemo(4));
+            tree.Insert(new IntDemo(355));
+            tree.Insert(new IntDemo(139));
+            tree.Insert(new IntDemo(39));
+            tree.Insert(new IntDemo(1000));
+            tree.Insert(new IntDemo(99));
+            Console.WriteLine(tree.Count);
 
 
 

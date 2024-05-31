@@ -247,6 +247,7 @@ namespace AA_Tree
            {
                 if (node.Left.Level < node.Level - 1 || node.Right.Level < node.Level - 1)
                 {
+                   
                     if (node.Right.Level >  --node.Level)
                     {
                         node.Right.Level = node.Level;
